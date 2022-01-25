@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 )
 
 const Length = 5
@@ -10,7 +9,7 @@ const Length = 5
 func main() {
 	words, err := loadWords(Length, false)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	for {

@@ -13,5 +13,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Loaded %d %d-letter words\n", len(words), Length)
+	for {
+		fmt.Printf("Found %d %d-letter words\n", len(words), Length)
+		showWords(&words, 10)
+
+		break
+	}
 }

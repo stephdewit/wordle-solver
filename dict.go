@@ -20,5 +20,5 @@ func loadWords(length int) ([]string, error) {
 		return nil, fmt.Errorf("Failed to run grep: %w", err)
 	}
 
-	return strings.Split(stdout.String(), "\n"), nil
+	return strings.Split(strings.TrimSuffix(stdout.String(), "\n"), "\n"), nil
 }

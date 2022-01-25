@@ -9,8 +9,13 @@ import (
 
 const WordList = "/usr/share/dict/words"
 
-func loadWords(length int) ([]string, error) {
-	command := exec.Command("/bin/grep", "-i", fmt.Sprintf("^[a-z]\\{%d\\}$", length), WordList)
+func loadWords(length int, includeProperNouns bool) ([]string, error) {
+	caseParameter := "--no-ignore-case"
+	if includeProperNouns {
+		caseParameter = "--ignore-case"
+	}
+
+	command := exec.Command("/bin/grep", caseParameter, fmt.Sprintf("^[a-z]\\{%d\\}$", length), WordList)
 
 	var stdout bytes.Buffer
 	command.Stdout = &stdout

@@ -8,7 +8,7 @@ import (
 const Length = 5
 
 func main() {
-	words, err := loadWords(Length)
+	words, err := loadWords(Length, false)
 	if err != nil {
 		log.Fatal(err)
 	}

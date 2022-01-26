@@ -14,7 +14,7 @@ func main() {
 
 	for {
 		fmt.Printf("Found %d %d-letter words\n", len(words), Length)
-		showWords(&words, 10)
+		showWords(words, 10)
 
 		word := readWord(Length)
 
@@ -24,6 +24,6 @@ func main() {
 
 		result := readResult(Length)
 
-		words = filterWords(&words, word, result)
+		words = filterWords(words, word, result)
 	}
 }

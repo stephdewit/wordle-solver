@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func showWords(words *[]string, howMuch int) {
+func showWords(words []string, howMuch int) {
 	fmt.Println(getRandomSubArray(words, howMuch))
 }
 

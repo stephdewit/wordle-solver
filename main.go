@@ -24,7 +24,6 @@ func main() {
 
 		result := readResult(Length)
 
-		fmt.Println(word, result)
-		break
+		words = filterWords(&words, word, result)
 	}
 }

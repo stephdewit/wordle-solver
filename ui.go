@@ -42,7 +42,7 @@ func readInput(label string, characters string, length int) (string, error) {
 
 func readWord(length int) string {
 	for {
-		input, err := readInput("Word", "a-z", length)
+		input, err := readInput("  Word", "a-z", length)
 		if err != nil {
 			fmt.Println(err)
 		} else {

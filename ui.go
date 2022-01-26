@@ -50,3 +50,16 @@ func readWord(length int) string {
 		}
 	}
 }
+
+func readResult(length int) string {
+	for {
+		input, err := readInput("Result", "pm-", length)
+		if err != nil {
+			fmt.Println(err)
+		} else if len(input) == 0 {
+			fmt.Println("Missing input")
+		} else {
+			return input
+		}
+	}
+}

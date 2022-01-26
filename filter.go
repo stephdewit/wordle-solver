@@ -5,14 +5,8 @@ import (
 )
 
 func filterWords(words []string, proposal string, result string) []string {
-	charsToRemove := []rune{}
-	for i, char := range []rune(result) {
-		if char == rune('-') {
-			charsToRemove = append(charsToRemove, []rune(proposal)[i])
-		}
-	}
-
 	filtered := []string{}
+
 	for _, word := range words {
 		if containsUnknownCharacters(word, proposal, result) {
 			continue

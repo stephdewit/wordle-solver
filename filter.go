@@ -18,6 +18,10 @@ func filterWords(words *[]string, proposal string, result string) []string {
 			continue
 		}
 
+		if missesProperlyPlacedCharacters(word, proposal, result) {
+			continue
+		}
+
 		filtered = append(filtered, word)
 	}
 
@@ -27,6 +31,16 @@ func filterWords(words *[]string, proposal string, result string) []string {
 func containsUnknownCharacters(word string, proposal string, result string) bool {
 	for i, char := range []rune(result) {
 		if char == rune('-') && strings.ContainsRune(word, []rune(proposal)[i]) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func missesProperlyPlacedCharacters(word string, proposal string, result string) bool {
+	for i, char := range []rune(result) {
+		if char == rune('!') && []rune(word)[i] != []rune(proposal)[i] {
 			return true
 		}
 	}

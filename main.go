@@ -16,6 +16,15 @@ func main() {
 		fmt.Printf("Found %d %d-letter words\n", len(words), Length)
 		showWords(&words, 10)
 
+		word := readWord(Length)
+
+		if (len(word) == 0) {
+			continue
+		}
+
+		result := readResult(Length)
+
+		fmt.Println(word, result)
 		break
 	}
 }

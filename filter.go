@@ -4,11 +4,11 @@ import (
 	"strings"
 )
 
-func filterWords(words *[]string, word string, result string) []string {
+func filterWords(words *[]string, proposal string, result string) []string {
 	charsToRemove := []rune{}
 	for i, char := range []rune(result) {
 		if char == rune('-') {
-			charsToRemove = append(charsToRemove, []rune(word)[i])
+			charsToRemove = append(charsToRemove, []rune(proposal)[i])
 		}
 	}
 

@@ -13,7 +13,7 @@ func getRandomSubArray(words *[]string, howMuch int) []string {
 		return *words
 	}
 
-	indexes := map[int]bool{}
+	indexes := make(map[int]bool)
 	for len(indexes) < howMuch {
 		indexes[rng.Int()%len(*words)] = true
 	}

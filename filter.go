@@ -1,26 +1,19 @@
 package main
 
-import (
-	"strings"
-)
-
 func filterWords(words []string, proposal string, result string) []string {
 	filtered := []string{}
 
 	for _, word := range words {
-		if containsUnknownCharacters(word, proposal, result) {
-			continue
+		rejected := false
+
+		for _, policy := range filteringPolicies {
+			if policy.reject(word, proposal, result) {
+				rejected = true
+				break
+			}
 		}
 
-		if missesProperlyPlacedCharacters(word, proposal, result) {
-			continue
-		}
-
-		if hasMisplacedCharacters(word, proposal, result) {
-			continue
-		}
-
-		if missesMisplacedCharacters(word, proposal, result) {
+		if rejected {
 			continue
 		}
 
@@ -28,44 +21,4 @@ func filterWords(words []string, proposal string, result string) []string {
 	}
 
 	return filtered
-}
-
-func containsUnknownCharacters(word string, proposal string, result string) bool {
-	for i, char := range []rune(result) {
-		if char == rune('-') && strings.ContainsRune(word, []rune(proposal)[i]) {
-			return true
-		}
-	}
-
-	return false
-}
-
-func missesProperlyPlacedCharacters(word string, proposal string, result string) bool {
-	for i, char := range []rune(result) {
-		if char == rune('!') && []rune(word)[i] != []rune(proposal)[i] {
-			return true
-		}
-	}
-
-	return false
-}
-
-func hasMisplacedCharacters(word string, proposal string, result string) bool {
-	for i, char := range []rune(result) {
-		if char == rune(':') && []rune(word)[i] == []rune(proposal)[i] {
-			return true
-		}
-	}
-
-	return false
-}
-
-func missesMisplacedCharacters(word string, proposal string, result string) bool {
-	for i, char := range []rune(result) {
-		if char == rune(':') && !strings.ContainsRune(word, []rune(proposal)[i]) {
-			return true
-		}
-	}
-
-	return false
 }

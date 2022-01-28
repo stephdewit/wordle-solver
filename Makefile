@@ -1,6 +1,6 @@
 exe=wordle-solver
 
-.PHONY: all clobber run
+.PHONY: all clobber run test
 
 all: $(exe)
 
@@ -10,5 +10,8 @@ $(exe): *.go
 clobber:
 	rm -vf $(exe)
 
-run:
-	go run *.go
+run: $(exe)
+	./$(exe)
+
+test:
+	go test -v *.go

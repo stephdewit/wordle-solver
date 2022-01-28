@@ -5,15 +5,15 @@ import (
 	"testing"
 )
 
-var defaultDataset = []string { "abcde", "cdefg", "hijkl", "mnopl", "qrstq" }
+var defaultDataset = []string{"abcde", "cdefg", "hijkl", "mnopl", "qrstq"}
 
 type filterTest struct {
-	dataset []string
+	dataset          []string
 	proposal, result string
-	expected []int
+	expected         []int
 }
 
-var filterTests = []filterTest {
+var filterTests = []filterTest{
 	filterTest{nil, "vwxyz", "-----", []int{0, 1, 2, 3, 4}},
 	filterTest{nil, "vwxyz", "-:--!", []int{}},
 }

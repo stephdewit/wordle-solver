@@ -18,7 +18,7 @@ func main() {
 
 		word := readWord(Length)
 
-		if (len(word) == 0) {
+		if len(word) == 0 {
 			continue
 		}
 

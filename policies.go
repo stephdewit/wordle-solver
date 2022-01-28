@@ -8,18 +8,17 @@ type FilterPolicy interface {
 	reject(word string, proposal string, result string) bool
 }
 
-type ContainsUnknownCharactersPolicy struct {}
-type MissesProperlyPlacedCharactersPolicy struct {}
-type HasMisplacedCharactersPolicy struct {}
-type MissesMisplacedCharactersPolicy struct {}
+type ContainsUnknownCharactersPolicy struct{}
+type MissesProperlyPlacedCharactersPolicy struct{}
+type HasMisplacedCharactersPolicy struct{}
+type MissesMisplacedCharactersPolicy struct{}
 
-var filteringPolicies = []FilterPolicy {
+var filteringPolicies = []FilterPolicy{
 	ContainsUnknownCharactersPolicy{},
 	MissesProperlyPlacedCharactersPolicy{},
 	HasMisplacedCharactersPolicy{},
 	MissesMisplacedCharactersPolicy{},
 }
-
 
 func (policy ContainsUnknownCharactersPolicy) reject(word string, proposal string, result string) bool {
 	for i, char := range []rune(result) {

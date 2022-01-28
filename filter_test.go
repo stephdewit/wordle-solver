@@ -21,6 +21,9 @@ var filterTests = []filterTest{
 	filterTest{nil, "vaxdz", "-:-!-", []int{0}},
 	filterTest{nil, "hixyz", "!!---", []int{2}},
 	filterTest{nil, "vwayz", "-----", []int{1, 2, 3, 4}},
+	filterTest{nil, "vwqyz", "--:--", []int{4}},
+	filterTest{nil, "vwxyq", "----!", []int{4}},
+	filterTest{nil, "vwqyq", "--:-!", []int{4}},
 }
 
 func TestFilterWords(t *testing.T) {

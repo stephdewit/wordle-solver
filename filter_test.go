@@ -4,20 +4,30 @@ import (
 	"testing"
 )
 
-var dataset = []string { "abcde", "cdefg", "hijkl", "mnopl", "qrstq" }
+var defaultDataset = []string { "abcde", "cdefg", "hijkl", "mnopl", "qrstq" }
 
-func TestFilterWordsWithNoCommonLettersAndNegativeResult(t *testing.T) {
-	filtered := filterWords(dataset, "vwxyz", "-----")
-
-	if (len(filtered) != 5) {
-		t.Errorf("Expected 5 words but got %d", len(filtered))
-	}
+type filterTest struct {
+	dataset []string
+	proposal, result string
+	expected []int
 }
 
-func TestFilterWordsWithNoCommonLettersAndPositiveResult(t *testing.T) {
-	filtered := filterWords(dataset, "vwxyz", "-:--!")
+var filterTests = []filterTest {
+	filterTest{nil, "vwxyz", "-----", []int{0, 1, 2, 3, 4}},
+	filterTest{nil, "vwxyz", "-:--!", []int{}},
+}
 
-	if (len(filtered) != 0) {
-		t.Errorf("Expected 0 words but got %d", len(filtered))
+func TestFilterWords(t *testing.T) {
+	for _, test := range filterTests {
+		dataset := defaultDataset
+		if test.dataset != nil {
+			dataset = test.dataset
+		}
+
+		filtered := filterWords(dataset, test.proposal, test.result)
+
+		if len(filtered) != len(test.expected) {
+			t.Errorf("Expected %d words but got %d", len(test.expected), len(filtered))
+		}
 	}
 }

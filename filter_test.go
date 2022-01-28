@@ -1,6 +1,7 @@
 package main
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -26,8 +27,13 @@ func TestFilterWords(t *testing.T) {
 
 		filtered := filterWords(dataset, test.proposal, test.result)
 
-		if len(filtered) != len(test.expected) {
-			t.Errorf("Expected %d words but got %d", len(test.expected), len(filtered))
+		expectedWords := []string{}
+		for _, i := range test.expected {
+			expectedWords = append(expectedWords, dataset[i])
+		}
+
+		if len(filtered) != len(test.expected) || !reflect.DeepEqual(filtered, expectedWords) {
+			t.Errorf("Expected %d words (%v) but got %d (%v) for %s/%s", len(test.expected), expectedWords, len(filtered), filtered, test.proposal, test.result)
 		}
 	}
 }

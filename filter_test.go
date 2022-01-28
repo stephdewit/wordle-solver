@@ -16,6 +16,11 @@ type filterTest struct {
 var filterTests = []filterTest{
 	filterTest{nil, "vwxyz", "-----", []int{0, 1, 2, 3, 4}},
 	filterTest{nil, "vwxyz", "-:--!", []int{}},
+	filterTest{nil, "vwxyc", "----:", []int{0, 1}},
+	filterTest{nil, "vwxyl", "----!", []int{2, 3}},
+	filterTest{nil, "vaxdz", "-:-!-", []int{0}},
+	filterTest{nil, "hixyz", "!!---", []int{2}},
+	filterTest{nil, "vwayz", "-----", []int{1, 2, 3, 4}},
 }
 
 func TestFilterWords(t *testing.T) {

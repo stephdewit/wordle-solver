@@ -1,4 +1,4 @@
-exe=wordle-solver
+exe = wordle-solver
 
 .PHONY: all clobber run test
 

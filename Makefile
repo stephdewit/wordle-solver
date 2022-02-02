@@ -1,8 +1,9 @@
 exe = wordle-solver
 PREFIX ?= /usr
 dest = $(DESTDIR)$(PREFIX)/bin/$(exe)
+INSTALL = install
 
-.PHONY: all clobber run test install uninstall
+.PHONY: all clobber run test install install-strip uninstall
 
 all: $(exe)
 
@@ -19,9 +20,12 @@ test:
 	go test -v *.go
 
 $(dest): $(exe)
-	install -vDs $(exe) $(dest)
+	$(INSTALL) -vD $(exe) $(dest)
 
 install: $(dest)
+
+install-strip:
+	$(MAKE) INSTALL='$(INSTALL) -s' install
 
 uninstall:
 	rm -vf $(dest)

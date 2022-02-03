@@ -21,8 +21,32 @@ var filteringPolicies = []FilterPolicy{
 }
 
 func (policy ContainsUnknownCharactersPolicy) reject(word string, proposal string, result string) bool {
-	for i, char := range []rune(result) {
-		if char == rune('-') && strings.ContainsRune(word, []rune(proposal)[i]) {
+	resultChars := []rune(result)
+	proposalChars := []rune(proposal)
+	wordChars := []rune(word)
+
+	for i, resultChar := range resultChars {
+		proposalChar := proposalChars[i]
+
+		if resultChar != rune('-') || !strings.ContainsRune(word, proposalChar) {
+			continue
+		}
+
+		atMost := 0
+		for j, otherResultChar := range resultChars {
+			if otherResultChar != rune('-') && proposalChars[j] == proposalChar {
+				atMost += 1
+			}
+		}
+
+		count := 0
+		for _, wordChar := range wordChars {
+			if wordChar == proposalChar {
+				count += 1
+			}
+		}
+
+		if count > atMost {
 			return true
 		}
 	}

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"regexp"
 	"strings"
@@ -13,19 +14,23 @@ func showWords(words []string, howMuch int) {
 	fmt.Println(getRandomSubArray(words, howMuch))
 }
 
-func readInput(label string, characters string, length int) (string, error) {
+func readInput(label string, characters string, length int) (string, bool, error) {
 	fmt.Printf("%s: ", label)
 
 	reader := bufio.NewReader(os.Stdin)
 	text, err := reader.ReadString('\n')
 	if err != nil {
+		if err == io.EOF {
+			return "", true, nil
+		}
+
 		panic(err)
 	}
 
 	text = strings.TrimSpace(text)
 
 	if len(text) == 0 {
-		return "", nil
+		return "", false, nil
 	}
 
 	match, err := regexp.MatchString(fmt.Sprintf("^[%s]{%d}$", characters, length), text)
@@ -34,32 +39,32 @@ func readInput(label string, characters string, length int) (string, error) {
 	}
 
 	if !match {
-		return "", errors.New("Invalid input")
+		return "", false, errors.New("Invalid input")
 	}
 
-	return text, nil
+	return text, false, nil
 }
 
-func readWord(length int) string {
+func readWord(length int) (string, bool) {
 	for {
-		input, err := readInput("  Word", "a-z", length)
+		input, exit, err := readInput("  Word", "a-z", length)
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			return input
+			return input, exit
 		}
 	}
 }
 
-func readResult(length int) string {
+func readResult(length int) (string, bool) {
 	for {
-		input, err := readInput("Result", "-:!", length)
+		input, exit, err := readInput("Result", "-:!", length)
 		if err != nil {
 			fmt.Println(err)
-		} else if len(input) == 0 {
+		} else if !exit && len(input) == 0 {
 			fmt.Println("Missing input")
 		} else {
-			return input
+			return input, exit
 		}
 	}
 }

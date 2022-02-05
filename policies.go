@@ -39,14 +39,7 @@ func (policy ContainsUnknownCharactersPolicy) reject(word string, proposal strin
 			}
 		}
 
-		count := 0
-		for _, wordChar := range wordChars {
-			if wordChar == proposalChar {
-				count += 1
-			}
-		}
-
-		if count > atMost {
+		if count(wordChars, proposalChar) > atMost {
 			return true
 		}
 	}
@@ -82,4 +75,16 @@ func (policy MissesMisplacedCharactersPolicy) reject(word string, proposal strin
 	}
 
 	return false
+}
+
+func count(word []rune, char rune) int {
+	c := 0
+
+	for _, wordChar := range word {
+		if wordChar == char {
+			c += 1
+		}
+	}
+
+	return c
 }

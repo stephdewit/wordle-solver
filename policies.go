@@ -75,7 +75,11 @@ func (policy MissesMisplacedCharactersPolicy) reject(word string, proposal strin
 	for i, resultChar := range resultChars {
 		proposalChar := proposalChars[i]
 
-		if resultChar == rune(':') && !strings.ContainsRune(word, proposalChar) {
+		if resultChar != rune(':') {
+			continue
+		}
+
+		if !strings.ContainsRune(word, proposalChar) {
 			return true
 		}
 

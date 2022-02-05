@@ -68,8 +68,25 @@ func (policy HasMisplacedCharactersPolicy) reject(word string, proposal string, 
 }
 
 func (policy MissesMisplacedCharactersPolicy) reject(word string, proposal string, result string) bool {
-	for i, char := range []rune(result) {
-		if char == rune(':') && !strings.ContainsRune(word, []rune(proposal)[i]) {
+	resultChars := []rune(result)
+	proposalChars := []rune(proposal)
+	wordChars := []rune(word)
+
+	for i, resultChar := range resultChars {
+		proposalChar := proposalChars[i]
+
+		if resultChar == rune(':') && !strings.ContainsRune(word, proposalChar) {
+			return true
+		}
+
+		atLeast := 0
+		for j, proposalChar := range proposalChars {
+			if resultChars[j] != rune('-') && proposalChars[i] == proposalChar {
+				atLeast += 1
+			}
+		}
+
+		if count(wordChars, proposalChar) < atLeast {
 			return true
 		}
 	}

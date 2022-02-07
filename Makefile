@@ -8,16 +8,16 @@ INSTALL = install
 all: $(exe)
 
 $(exe): *.go
-	go build -o $(exe) *.go
+	go build -o $(exe) .
 
 clobber:
 	rm -vf $(exe)
 
-run: $(exe)
-	./$(exe)
+run:
+	go run .
 
 test:
-	go test -v *.go
+	go test -v .
 
 $(dest): $(exe)
 	$(INSTALL) -vD $(exe) $(dest)

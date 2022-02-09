@@ -41,6 +41,6 @@ func main() {
 	} else if len(words) == 0 {
 		fmt.Println("No more words")
 	} else {
-		fmt.Println("Only one word left:", words[0])
+		fmt.Println("Only one word left:", words[0].value)
 	}
 }

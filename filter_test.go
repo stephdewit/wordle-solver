@@ -40,11 +40,16 @@ func TestFilterWords(t *testing.T) {
 			dataset = test.dataset
 		}
 
-		filtered := filterWords(dataset, test.proposal, test.result)
+		var words []Word
+		for _, str := range dataset {
+			words = append(words, Word{value: str})
+		}
 
-		expectedWords := []string{}
+		filtered := filterWords(words, test.proposal, test.result)
+
+		expectedWords := []Word{}
 		for _, i := range test.expected {
-			expectedWords = append(expectedWords, dataset[i])
+			expectedWords = append(expectedWords, Word{value: dataset[i]})
 		}
 
 		if len(filtered) != len(test.expected) || !reflect.DeepEqual(filtered, expectedWords) {

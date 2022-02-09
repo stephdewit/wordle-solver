@@ -10,8 +10,12 @@ import (
 	"strings"
 )
 
-func showWords(words []string, howMuch int) {
-	fmt.Println(getRandomSubArray(words, howMuch))
+func showWords(words []Word, howMuch int) {
+	var strings []string
+	for _, word := range words {
+		strings = append(strings, word.value)
+	}
+	fmt.Println(getRandomSubArray(strings, howMuch))
 }
 
 func readInput(label string, characters string, length int) (string, bool, error) {

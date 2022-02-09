@@ -1,13 +1,13 @@
 package main
 
-func filterWords(words []string, proposal string, result string) []string {
-	filtered := []string{}
+func filterWords(words []Word, proposal string, result string) []Word {
+	filtered := []Word{}
 
 	for _, word := range words {
 		rejected := false
 
 		for _, policy := range filteringPolicies {
-			if policy.reject(word, proposal, result) {
+			if policy.reject(word.value, proposal, result) {
 				rejected = true
 				break
 			}

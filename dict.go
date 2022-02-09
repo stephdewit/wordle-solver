@@ -9,7 +9,7 @@ import (
 
 const WordList = "/usr/share/dict/words"
 
-func loadWords(length int, includeProperNouns bool) ([]string, error) {
+func loadWords(length int, includeProperNouns bool) ([]Word, error) {
 	caseParameter := "--no-ignore-case"
 	if includeProperNouns {
 		caseParameter = "--ignore-case"
@@ -25,5 +25,12 @@ func loadWords(length int, includeProperNouns bool) ([]string, error) {
 		return nil, fmt.Errorf("Failed to run grep: %w", err)
 	}
 
-	return strings.Split(strings.TrimSuffix(stdout.String(), "\n"), "\n"), nil
+	strings := strings.Split(strings.TrimSuffix(stdout.String(), "\n"), "\n")
+
+	var words []Word
+	for _, s := range strings {
+		words = append(words, word(s))
+	}
+
+	return words, nil
 }

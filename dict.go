@@ -27,9 +27,11 @@ func loadWords(length int, includeProperNouns bool) ([]Word, error) {
 
 	strings := strings.Split(strings.TrimSuffix(stdout.String(), "\n"), "\n")
 
+	frequencies := getFrequencies(strings)
+
 	var words []Word
 	for _, s := range strings {
-		words = append(words, word(s))
+		words = append(words, word(s, frequencies))
 	}
 
 	return words, nil

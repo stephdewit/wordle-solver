@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
+	"sort"
 	"strings"
 )
 
@@ -33,6 +34,10 @@ func loadWords(length int, includeProperNouns bool) ([]Word, error) {
 	for _, s := range strings {
 		words = append(words, word(s, frequencies))
 	}
+
+	sort.Slice(words, func(i, j int) bool {
+		return words[i].weight > words[j].weight
+	})
 
 	return words, nil
 }

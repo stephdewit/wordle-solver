@@ -1,23 +1,32 @@
+sources := $(shell find . -name '*.go') go.mod
 exe = wordle-solver
 PREFIX ?= /usr
 dest = $(DESTDIR)$(PREFIX)/bin/$(exe)
 INSTALL = install
 
-.PHONY: all clobber run test install install-strip uninstall
+.PHONY: all clean clobber run test install install-strip uninstall
 
 all: $(exe)
 
-$(exe): *.go
+$(exe): $(source)
 	go build -o $(exe) .
 
-clobber:
+clean:
+	rm -vf cover.*
+
+clobber: clean
 	rm -vf $(exe)
 
 run:
 	go run .
 
-test:
-	go test -v .
+cover.out: $(sources)
+	go test -v -coverprofile cover.out -coverpkg ./...
+
+cover.html: cover.out
+	go tool cover -html=cover.out -o cover.html
+
+test: cover.html
 
 $(dest): $(exe)
 	$(INSTALL) -vD $(exe) $(dest)

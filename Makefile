@@ -28,7 +28,7 @@ run:
 	go run ./cli
 
 cover.out: $(sources)
-	go test -v -coverprofile cover.out -coverpkg ./...
+	go test -v -coverprofile cover.out -coverpkg ./... ./...
 
 cover.html: cover.out
 	go tool cover -html=cover.out -o cover.html

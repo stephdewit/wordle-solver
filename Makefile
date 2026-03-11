@@ -1,4 +1,7 @@
-sources := $(shell find . -name '*.go') go.mod
+sources-solver := $(shell find solver/ -name '*.go') go.mod
+sources-cli    := $(shell find cli/ -name '*.go') $(sources-solver)
+sources-api    := $(shell find api/ -name '*.go') $(sources-solver)
+sources        := $(sources-cli) $(sources-api)
 exe = wordle-solver
 exe-api = wordle-solver-api
 PREFIX ?= /usr
@@ -9,10 +12,10 @@ INSTALL = install
 
 all: $(exe) $(exe-api)
 
-$(exe): $(sources)
+$(exe): $(sources-cli)
 	go build -o $(exe) ./cli
 
-$(exe-api): $(sources)
+$(exe-api): $(sources-api)
 	go build -o $(exe-api) ./api
 
 clean:

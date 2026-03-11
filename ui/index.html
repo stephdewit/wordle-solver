@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wordle Solver</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: sans-serif;
+      background: #121213;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #3a3a3c;
+      padding-bottom: 16px;
+      margin-bottom: 28px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    .panel {
+      width: 100%;
+      max-width: 420px;
+      margin-bottom: 24px;
+    }
+
+    .label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #818384;
+      margin-bottom: 10px;
+    }
+
+    /* Tiles */
+    .tiles { display: flex; gap: 6px; }
+
+    .tile {
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      border: 2px solid #3a3a3c;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.1s, border-color 0.1s;
+    }
+    .tile.absent,   .htile.absent   { background: #3a3a3c; border-color: #3a3a3c; }
+    .tile.misplace, .htile.misplace { background: #b59f3b; border-color: #b59f3b; }
+    .tile.correct,  .htile.correct  { background: #538d4e; border-color: #538d4e; }
+
+    /* History */
+    .history-row { display: flex; gap: 6px; margin-bottom: 6px; }
+
+    .htile {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-radius: 4px;
+    }
+
+    /* Word input */
+    input[type=text] {
+      width: 100%;
+      background: #121213;
+      border: 2px solid #3a3a3c;
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-align: center;
+      letter-spacing: 6px;
+      padding: 10px;
+      border-radius: 4px;
+      outline: none;
+      margin-bottom: 12px;
+    }
+    input[type=text]:focus { border-color: #818384; }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      border: none;
+      padding: 13px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .btn-submit { background: #538d4e; color: #fff; }
+    .btn-submit:hover:not(:disabled) { background: #6aaf65; }
+    .btn-submit:disabled { background: #3a3a3c; color: #818384; cursor: not-allowed; }
+    .btn-reset  { background: #3a3a3c; color: #fff; }
+    .btn-reset:hover { background: #818384; }
+
+    /* Suggestions */
+    .suggestions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .suggestion {
+      background: #3a3a3c;
+      padding: 7px 12px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+    .suggestion:hover { background: #538d4e; }
+
+    .meta  { color: #818384; font-size: 0.78rem; margin-top: 8px; }
+    .hint  { color: #818384; font-size: 0.75rem; margin-top: 10px; }
+    .error { color: #e05555; font-size: 0.82rem; margin-top: 8px; }
+
+    .solved {
+      text-align: center;
+      font-size: 1.1rem;
+      padding: 12px 0;
+    }
+    .solved strong { color: #538d4e; text-transform: uppercase; font-size: 1.4rem; display: block; margin-top: 6px; }
+  </style>
+</head>
+<body>
+<div id="app">
+  <h1>Wordle Solver</h1>
+
+  <!-- Suggestions -->
+  <div class="panel">
+    <div class="label">Suggestions</div>
+    <div v-if="loading" style="color:#818384">Loading…</div>
+    <template v-else>
+      <div class="suggestions">
+        <span
+          v-for="w in suggestions" :key="w"
+          class="suggestion"
+          @click="currentWord = w"
+        >{{ w }}</span>
+      </div>
+      <div class="meta" v-if="total > 0">{{ total }} word{{ total !== 1 ? 's' : '' }} remaining</div>
+      <div class="meta" v-else-if="guesses.length > 0">No words found</div>
+    </template>
+    <div class="error" v-if="error">{{ error }}</div>
+  </div>
+
+  <!-- History -->
+  <div class="panel" v-if="guesses.length > 0">
+    <div class="label">Guesses</div>
+    <div class="history-row" v-for="g in guesses" :key="g.w + g.r">
+      <div
+        v-for="(ch, i) in g.w" :key="i"
+        class="htile"
+        :class="tileClass(g.r[i])"
+      >{{ ch }}</div>
+    </div>
+  </div>
+
+  <!-- Solved -->
+  <div class="panel" v-if="total === 1 && suggestions.length === 1">
+    <div class="solved">
+      The word is<strong>{{ suggestions[0] }}</strong>
+    </div>
+    <button class="btn btn-reset" @click="reset">Start over</button>
+  </div>
+
+  <!-- Input form -->
+  <div class="panel" v-else>
+    <div class="label">New guess</div>
+    <input
+      type="text"
+      :maxlength="length"
+      v-model="currentWord"
+      placeholder="Word"
+      @input="currentWord = currentWord.toLowerCase().replace(/[^a-z]/g, '')"
+    />
+    <div class="tiles">
+      <div
+        v-for="(state, i) in currentResult" :key="i"
+        class="tile"
+        :class="tileClass(state)"
+        @click="cycleResult(i)"
+      >{{ currentWord[i] || '' }}</div>
+    </div>
+    <div class="hint">Click tiles to set result &mdash; grey: absent &nbsp; yellow: wrong position &nbsp; green: correct</div>
+    <button
+      class="btn btn-submit"
+      :disabled="currentWord.length !== length"
+      @click="submit"
+    >Submit</button>
+    <button class="btn btn-reset" @click="reset">Reset</button>
+  </div>
+</div>
+
+<script>
+const { createApp, ref, onMounted } = Vue
+
+const API = 'http://localhost:8080'
+const LENGTH = 5
+const CYCLE = ['-', ':', '!']
+
+createApp({
+  setup() {
+    const guesses     = ref([])
+    const currentWord = ref('')
+    const currentResult = ref(Array(LENGTH).fill('-'))
+    const suggestions = ref([])
+    const total       = ref(0)
+    const loading     = ref(false)
+    const error       = ref('')
+    const length      = LENGTH
+
+    function tileClass(ch) {
+      if (ch === '!') return 'correct'
+      if (ch === ':') return 'misplace'
+      return 'absent'
+    }
+
+    function cycleResult(i) {
+      const idx = CYCLE.indexOf(currentResult.value[i])
+      currentResult.value[i] = CYCLE[(idx + 1) % CYCLE.length]
+    }
+
+    async function fetchSuggestions() {
+      loading.value = true
+      error.value = ''
+      try {
+        const res = await fetch(`${API}/suggestions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ g: guesses.value }),
+        })
+        if (!res.ok) throw new Error(await res.text())
+        const data = await res.json()
+        suggestions.value = data.s ?? []
+        total.value = data.t ?? 0
+      } catch (e) {
+        error.value = e.message
+      } finally {
+        loading.value = false
+      }
+    }
+
+    async function submit() {
+      if (currentWord.value.length !== LENGTH) return
+      guesses.value.push({ w: currentWord.value, r: currentResult.value.join('') })
+      currentWord.value = ''
+      currentResult.value = Array(LENGTH).fill('-')
+      await fetchSuggestions()
+    }
+
+    function reset() {
+      guesses.value = []
+      currentWord.value = ''
+      currentResult.value = Array(LENGTH).fill('-')
+      fetchSuggestions()
+    }
+
+    onMounted(fetchSuggestions)
+
+    return { guesses, currentWord, currentResult, suggestions, total, loading, error, length, tileClass, cycleResult, submit, reset }
+  }
+}).mount('#app')
+</script>
+</body>
+</html>

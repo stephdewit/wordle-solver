@@ -1,4 +1,4 @@
-package main
+package solver
 
 import (
 	"reflect"
@@ -42,14 +42,14 @@ func TestFilterWords(t *testing.T) {
 
 		var words []Word
 		for _, str := range dataset {
-			words = append(words, Word{value: str})
+			words = append(words, Word{Value: str})
 		}
 
-		filtered := filterWords(words, test.proposal, test.result)
+		filtered := FilterWords(words, test.proposal, test.result)
 
 		expectedWords := []Word{}
 		for _, i := range test.expected {
-			expectedWords = append(expectedWords, Word{value: dataset[i]})
+			expectedWords = append(expectedWords, Word{Value: dataset[i]})
 		}
 
 		if len(filtered) != len(test.expected) || !reflect.DeepEqual(filtered, expectedWords) {

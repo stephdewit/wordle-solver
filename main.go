@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/stephdewit/wordle-solver/solver"
 )
 
 const Length = 5
 
 func main() {
-	words, err := loadWords(Length, false)
+	words, err := solver.LoadWords(Length, false)
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +35,7 @@ func main() {
 			break
 		}
 
-		words = filterWords(words, word, result)
+		words = solver.FilterWords(words, word, result)
 	}
 
 	if done {
@@ -41,6 +43,6 @@ func main() {
 	} else if len(words) == 0 {
 		fmt.Println("No more words")
 	} else {
-		fmt.Println("Only one word left:", words[0].value)
+		fmt.Println("Only one word left:", words[0].Value)
 	}
 }

@@ -1,4 +1,4 @@
-package main
+package solver
 
 import (
 	"bufio"
@@ -16,7 +16,7 @@ func resolveWordListPath() string {
 	return defaultWordList
 }
 
-func loadWords(length int, includeProperNouns bool) ([]Word, error) {
+func LoadWords(length int, includeProperNouns bool) ([]Word, error) {
 	file, err := os.Open(resolveWordListPath())
 	if err != nil {
 		return nil, fmt.Errorf("failed to open word list: %w", err)
@@ -39,7 +39,7 @@ func loadWords(length int, includeProperNouns bool) ([]Word, error) {
 
 	words := make([]Word, len(strs))
 	for i, s := range strs {
-		words[i] = word(s, frequencies)
+		words[i] = newWord(s, frequencies)
 	}
 
 	sort.Slice(words, func(i, j int) bool {

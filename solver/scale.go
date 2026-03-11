@@ -1,4 +1,4 @@
-package main
+package solver
 
 func getFrequencies(words []string) map[rune]int {
 	freq := make(map[rune]int)

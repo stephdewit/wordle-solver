@@ -8,12 +8,14 @@ import (
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/stephdewit/wordle-solver/solver"
 )
 
-func showWords(words []Word, howMuch int) {
+func showWords(words []solver.Word, howMuch int) {
 	var strings []string
 	for i, word := range words {
-		strings = append(strings, word.value)
+		strings = append(strings, word.Value)
 
 		if i == howMuch-1 {
 			break

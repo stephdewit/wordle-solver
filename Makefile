@@ -1,21 +1,25 @@
 sources := $(shell find . -name '*.go') go.mod
 exe = wordle-solver
+exe-api = wordle-solver-api
 PREFIX ?= /usr
 dest = $(DESTDIR)$(PREFIX)/bin/$(exe)
 INSTALL = install
 
 .PHONY: all clean clobber run test install install-strip uninstall
 
-all: $(exe)
+all: $(exe) $(exe-api)
 
-$(exe): $(source)
+$(exe): $(sources)
 	go build -o $(exe) ./cli
+
+$(exe-api): $(sources)
+	go build -o $(exe-api) ./api
 
 clean:
 	rm -vf cover.*
 
 clobber: clean
-	rm -vf $(exe)
+	rm -vf $(exe) $(exe-api)
 
 run:
 	go run ./cli

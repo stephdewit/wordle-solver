@@ -154,7 +154,7 @@
 
   <!-- Suggestions -->
   <div class="panel">
-    <div class="label">Suggestions</div>
+    <div class="label">Candidates</div>
     <div v-if="loading" style="color:#818384">Loading…</div>
     <template v-else>
       <div class="suggestions">
@@ -168,6 +168,18 @@
       <div class="meta" v-else-if="guesses.length > 0">No words found</div>
     </template>
     <div class="error" v-if="error">{{ error }}</div>
+  </div>
+
+  <!-- Probes -->
+  <div class="panel" v-if="!loading && probes.length > 0">
+    <div class="label">Probes</div>
+    <div class="suggestions">
+      <span
+        v-for="w in probes" :key="w"
+        class="suggestion"
+        @click="currentWord = w"
+      >{{ w }}</span>
+    </div>
   </div>
 
   <!-- History -->
@@ -231,6 +243,7 @@ createApp({
     const currentWord = ref('')
     const currentResult = ref(Array(LENGTH).fill('-'))
     const suggestions = ref([])
+    const probes      = ref([])
     const total       = ref(0)
     const loading     = ref(false)
     const error       = ref('')
@@ -259,7 +272,8 @@ createApp({
         if (!res.ok) throw new Error(await res.text())
         const data = await res.json()
         suggestions.value = data.s ?? []
-        total.value = data.t ?? 0
+        probes.value      = data.p ?? []
+        total.value       = data.t ?? 0
       } catch (e) {
         error.value = e.message
       } finally {
@@ -284,7 +298,7 @@ createApp({
 
     onMounted(fetchSuggestions)
 
-    return { guesses, currentWord, currentResult, suggestions, total, loading, error, length, tileClass, cycleResult, submit, reset }
+    return { guesses, currentWord, currentResult, suggestions, probes, total, loading, error, length, tileClass, cycleResult, submit, reset }
   }
 }).mount('#app')
 </script>

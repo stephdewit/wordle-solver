@@ -23,6 +23,7 @@ type SuggestRequest struct {
 
 type SuggestResponse struct {
 	Suggestions []string `json:"s"`
+	Probes      []string `json:"p"`
 	Total       int      `json:"t"`
 }
 
@@ -53,24 +54,33 @@ func handleSuggest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	words := cachedWords
-	for _, g := range req.Guesses {
-		words = solver.FilterWords(words, g.Word, g.Result)
+	candidates := cachedWords
+	guessedWords := make([]string, len(req.Guesses))
+	for i, g := range req.Guesses {
+		candidates = solver.FilterWords(candidates, g.Word, g.Result)
+		guessedWords[i] = g.Word
 	}
 
-	const maxSuggestions = 10
-	suggestions := make([]string, 0, min(maxSuggestions, len(words)))
-	for i, word := range words {
-		if i >= maxSuggestions {
+	const max = 10
+	suggestions := make([]string, 0, min(max, len(candidates)))
+	for i, word := range candidates {
+		if i >= max {
 			break
 		}
 		suggestions = append(suggestions, word.Value)
 	}
 
+	probeWords := solver.BestProbes(candidates, cachedWords, guessedWords)
+	probes := make([]string, len(probeWords))
+	for i, word := range probeWords {
+		probes[i] = word.Value
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(SuggestResponse{
 		Suggestions: suggestions,
-		Total:       len(words),
+		Probes:      probes,
+		Total:       len(candidates),
 	})
 }
 

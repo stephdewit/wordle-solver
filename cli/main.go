@@ -9,15 +9,25 @@ import (
 const Length = 5
 
 func main() {
-	words, err := solver.LoadWords(Length, false)
+	allWords, err := solver.LoadWords(Length, false)
 	if err != nil {
 		panic(err)
 	}
 
+	candidates := allWords
+	var guessedWords []string
+
 	done := false
-	for len(words) > 1 {
-		fmt.Printf("Found %d %d-letter words\n", len(words), Length)
-		showWords(words, 10)
+	for len(candidates) > 1 {
+		fmt.Printf("Found %d %d-letter words\n", len(candidates), Length)
+		fmt.Print("Candidates: ")
+		showWords(candidates, 10)
+
+		probes := solver.BestProbes(candidates, allWords, guessedWords)
+		if len(probes) > 0 {
+			fmt.Print("Probes:     ")
+			showWords(probes, 10)
+		}
 
 		word, exit := readWord(Length)
 		if exit {
@@ -35,14 +45,15 @@ func main() {
 			break
 		}
 
-		words = solver.FilterWords(words, word, result)
+		guessedWords = append(guessedWords, word)
+		candidates = solver.FilterWords(candidates, word, result)
 	}
 
 	if done {
 		fmt.Println("\nDone")
-	} else if len(words) == 0 {
+	} else if len(candidates) == 0 {
 		fmt.Println("No more words")
 	} else {
-		fmt.Println("Only one word left:", words[0].Value)
+		fmt.Println("Only one word left:", candidates[0].Value)
 	}
 }

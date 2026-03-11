@@ -3,12 +3,20 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"os/exec"
 	"sort"
 	"strings"
 )
 
-const WordList = "/usr/share/dict/words"
+const defaultWordList = "/usr/share/dict/words"
+
+func resolveWordListPath() string {
+	if path := os.Getenv("WORDLIST"); path != "" {
+		return path
+	}
+	return defaultWordList
+}
 
 func loadWords(length int, includeProperNouns bool) ([]Word, error) {
 	caseParameter := "--no-ignore-case"
@@ -16,7 +24,7 @@ func loadWords(length int, includeProperNouns bool) ([]Word, error) {
 		caseParameter = "--ignore-case"
 	}
 
-	command := exec.Command("/bin/grep", caseParameter, fmt.Sprintf("^[a-z]\\{%d\\}$", length), WordList)
+	command := exec.Command("/bin/grep", caseParameter, fmt.Sprintf("^[a-z]\\{%d\\}$", length), resolveWordListPath())
 
 	var stdout bytes.Buffer
 	command.Stdout = &stdout

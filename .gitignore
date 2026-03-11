@@ -1,5 +1,6 @@
 wordle-solver
 wordle-solver-api
+.claude/
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 cover.*

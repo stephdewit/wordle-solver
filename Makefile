@@ -9,7 +9,7 @@ INSTALL = install
 all: $(exe)
 
 $(exe): $(source)
-	go build -o $(exe) .
+	go build -o $(exe) ./cli
 
 clean:
 	rm -vf cover.*
@@ -18,7 +18,7 @@ clobber: clean
 	rm -vf $(exe)
 
 run:
-	go run .
+	go run ./cli
 
 cover.out: $(sources)
 	go test -v -coverprofile cover.out -coverpkg ./...

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -26,6 +27,19 @@ type SuggestResponse struct {
 }
 
 var cachedWords []solver.Word
+
+func cors(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next(w, r)
+	}
+}
 
 func handleSuggest(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -54,7 +68,6 @@ func handleSuggest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(SuggestResponse{
 		Suggestions: suggestions,
 		Total:       len(words),
@@ -62,6 +75,9 @@ func handleSuggest(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	enableCORS := flag.Bool("cors", false, "enable CORS middleware")
+	flag.Parse()
+
 	var err error
 	cachedWords, err = solver.LoadWords(length, false)
 	if err != nil {
@@ -74,7 +90,12 @@ func main() {
 		port = "8080"
 	}
 
-	http.HandleFunc("/suggestions", handleSuggest)
+	handler := http.HandlerFunc(handleSuggest)
+	if *enableCORS {
+		handler = cors(handleSuggest)
+		log.Println("CORS enabled")
+	}
+	http.Handle("/suggestions", handler)
 
 	addr := ":" + port
 	log.Printf("listening on %s", addr)

@@ -8,7 +8,11 @@ PREFIX ?= /usr
 dest = $(DESTDIR)$(PREFIX)/bin/$(exe)
 INSTALL = install
 
-.PHONY: all clean clobber run test install install-strip uninstall
+namespace = stephdewit
+image-api = $(exe)
+image-ui  = $(exe)-ui
+
+.PHONY: all clean clobber run test install install-strip uninstall build-api-image build-ui-image push-api push-ui check-version
 
 all: $(exe) $(exe-api)
 
@@ -45,3 +49,26 @@ install-strip:
 
 uninstall:
 	rm -vf $(dest)
+
+build-api-image: check-version
+	docker build . \
+		-t $(namespace)/$(image-api):$(VERSION) \
+		-t $(namespace)/$(image-api):latest
+
+build-ui-image: check-version
+	docker build ui/ \
+		-t $(namespace)/$(image-ui):$(VERSION) \
+		-t $(namespace)/$(image-ui):latest
+
+push-api: check-version
+	docker push $(namespace)/$(image-api):$(VERSION)
+	docker push $(namespace)/$(image-api):latest
+
+push-ui: check-version
+	docker push $(namespace)/$(image-ui):$(VERSION)
+	docker push $(namespace)/$(image-ui):latest
+
+check-version:
+ifndef VERSION
+	$(error VERSION is undefined)
+endif

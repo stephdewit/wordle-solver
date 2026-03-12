@@ -233,7 +233,13 @@
 <script>
 const { createApp, ref, onMounted } = Vue
 
-const API = 'http://localhost:8080'
+function resolveApiBase() {
+  const param = new URLSearchParams(window.location.search).get('api')
+  if (param) return param.replace(/\/$/, '')
+  if (window.location.protocol === 'file:') return 'http://localhost:8080'
+  return window.location.origin + '/api'
+}
+const API = resolveApiBase()
 const LENGTH = 5
 const CYCLE = ['-', ':', '!']
 

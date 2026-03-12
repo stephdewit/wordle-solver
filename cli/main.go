@@ -20,12 +20,12 @@ func main() {
 	done := false
 	for len(candidates) > 1 {
 		fmt.Printf("Found %d %d-letter words\n", len(candidates), Length)
-		fmt.Print("Candidates: ")
+		fmt.Printf("%10s: ", "Candidates")
 		showWords(candidates, 10)
 
 		probes := solver.BestProbes(candidates, allWords, guessedWords)
 		if len(probes) > 0 {
-			fmt.Print("Probes:     ")
+			fmt.Printf("%10s: ", "Probes")
 			showWords(probes, 10)
 		}
 

@@ -25,7 +25,7 @@ func showWords(words []solver.Word, howMuch int) {
 }
 
 func readInput(label string, characters string, length int) (string, bool, error) {
-	fmt.Printf("%s: ", label)
+	fmt.Printf("%10s: ", label)
 
 	reader := bufio.NewReader(os.Stdin)
 	text, err := reader.ReadString('\n')
@@ -57,7 +57,7 @@ func readInput(label string, characters string, length int) (string, bool, error
 
 func readWord(length int) (string, bool) {
 	for {
-		input, exit, err := readInput("  Word", "a-z", length)
+		input, exit, err := readInput("Word", "a-z", length)
 		if err != nil {
 			fmt.Println(err)
 		} else {

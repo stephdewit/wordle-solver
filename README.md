@@ -60,9 +60,9 @@ and its result:
 ```text
 Found 4591 5-letter words
 Candidates: [saner stare snare laser lares ...]
-Probes:     [alien arise stale crane trace ...]
-  Word: crane
-Result: --:-!
+    Probes: [alien arise stale crane trace ...]
+      Word: crane
+    Result: --:-!
 ```
 
 The word list path can be overridden:
@@ -86,8 +86,8 @@ PORT=3000 ./wordle-solver-api -cors
 ```json
 {
   "g": [
-    { "w": "crane", "r": "--:-!" },
-    { "w": "stole", "r": "-!-!-" }
+    { "w": "raise", "r": "-:-!-" },
+    { "w": "mouth", "r": "---:-" }
   ]
 }
 ```
@@ -96,7 +96,7 @@ PORT=3000 ./wordle-solver-api -cors
 
 ```json
 {
-  "s": ["stone", "atone", "ozone"],
+  "s": ["blast", "angst" ,"avast"],
   "p": ["sloth", "droit", "pilot"],
   "t": 12
 }

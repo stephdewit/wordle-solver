@@ -13,9 +13,16 @@ func handleSuggest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	r.Body = http.MaxBytesReader(w, r.Body, 4096)
+
 	var req SuggestRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	if err := req.validate(length); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 

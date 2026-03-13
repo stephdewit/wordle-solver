@@ -237,7 +237,7 @@ function resolveApiBase() {
   const param = new URLSearchParams(window.location.search).get('api')
   if (param) return param.replace(/\/$/, '')
   if (window.location.protocol === 'file:') return 'http://localhost:8080'
-  return window.location.origin + '/api'
+  return window.location.origin
 }
 const API = resolveApiBase()
 const LENGTH = 5

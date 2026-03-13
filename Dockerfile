@@ -6,6 +6,7 @@ COPY api/ api/
 RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /wordle-solver-api ./api
 
 FROM alpine:3.21
+ENV WORDLIST=/usr/share/dict/american-english
 RUN apk add --no-cache words
 COPY --from=builder /wordle-solver-api /wordle-solver-api
 EXPOSE 8080

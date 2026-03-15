@@ -17,7 +17,7 @@ After each guess, encode the result character by character:
 | `-` | Letter not in the word (grey) |
 
 For example, guessing `crane` where `r` is misplaced and `e` is correct:
-`--:-!`
+`-:--!`
 
 The solver returns two lists:
 
@@ -96,8 +96,8 @@ PORT=3000 ./wordle-solver-api -cors
 
 ```json
 {
-  "s": ["blast", "angst" ,"avast"],
-  "p": ["sloth", "droit", "pilot"],
+  "s": ["blast", "angst", "avast", "..."],
+  "p": ["sloth", "droit", "pilot", "..."],
   "t": 12
 }
 ```
